@@ -7,20 +7,42 @@ require "rspec"
 # cells is greater than three, the cell becomes 'off'.
 
 Cell = Struct.new(:row, :col)
+LOW_THRESHOLD = 2
+HIGH_THRESHOLD = 3
+MAX_GRID_SIZE = 1_000_000
 
 describe :succ do
-  it "turns a cell 'off' if the number of surrounding 'on' cells is < 2" do
-    on_cell = Cell.new(1, 1) # use rand
+  test_cell = Cell.new(rand(MAX_GRID_SIZE), rand(MAX_GRID_SIZE))
 
-    (0...2).each do |num_surrounding|
-      on_cells = [on_cell] + surrounding_cells(on_cell).sample(num_surrounding)
-      expect(send(subject, on_cells)).to be_empty
+  it "turns a cell 'off' if the number of surrounding 'on' cells is < LOW_THRESHOLD" do
+
+    (0...LOW_THRESHOLD).each do |num_surrounding|
+      on_cells = [test_cell] + surrounding_cells(test_cell).sample(num_surrounding)
+      expect(send(subject, on_cells)).to_not include(test_cell)
     end
   end
 
-  it "leaves a cell unchanged if the number of surrounding 'on' cells == 2"
-  it "turns a cell 'on' if the number of surrounding 'on' cells == 3"
-  it "turns a cell 'off' if the number of surrounding 'on' cells > 3"
+  it "leaves a cell unchanged if the number of surrounding 'on' cells == LOW_THRESHOLD" do
+    on_cells = surrounding_cells(test_cell).sample(LOW_THRESHOLD)
+
+    expect(send(subject, [test_cell] + on_cells)).to include(test_cell)
+    expect(send(subject, on_cells)).to_not include(test_cell)
+  end
+
+  it "turns a cell 'on' if the number of surrounding 'on' cells == HIGH_THRESHOLD" do
+    on_cells = surrounding_cells(test_cell).sample(HIGH_THRESHOLD)
+
+    expect(send(subject, on_cells)).to include(test_cell)
+  end
+
+  it "turns a cell 'off' if the number of surrounding 'on' cells > HIGH_THRESHOLD" do
+    surrounding_cells = surrounding_cells(test_cell).sample(HIGH_THRESHOLD)
+
+    (HIGH_THRESHOLD..surrounding_cells.size).each do |num_surrounding|
+      on_cells = [test_cell] + surrounding_cells.sample(num_surrounding)
+      expect(send(subject, on_cells)).to_not include(test_cell)
+    end
+  end
 end
 
 def succ(on_cells)
