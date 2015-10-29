@@ -3,14 +3,57 @@
 <head>
     <meta charset="utf-8">
     <title>Demo</title>
+    <style type="text/css">
+        td {
+            border: 1px solid black;
+            width: 25px;
+            height: 25px;
+        }
+        td.live {
+            background-color: green;
+        }
+    </style>
 </head>
 <body>
-    <a href="http://jquery.com/">jQuery</a>
-    <button type="button" onclick="getNextGeneration()">Click Me!</button>
+    <table>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td></td><td></td><td></td><td></td><td></td>
+        </tr>
+    </table>
+    <button type="button" onclick="getNextGeneration()">Next generation!</button>
     <script src="jquery-2.1.4.min.js"></script>
-    <script> 
+    <script>
+    $( document ).ready(function() {
+        $( "td" ).click(function( event ) {
+            $( this ).toggleClass( "live" );
+        });
+    });
     function getNextGeneration() {
-        var liveCells = [[2,1],[2,2],[2,3]];
+        var liveCells = []
+        for (r = 0; r < $( "tbody" ).children().length; r++) {
+            var row = $( "tbody" ).children()[r];
+
+            for (c = 0; c < row.children.length; c++) {
+                if (row.children[c].className == "live") {
+                    liveCells.push([r, c]);
+                }
+            }
+        }
+        console.dir(liveCells);
+
+        // var liveCells = [[2,1],[2,2],[2,3]];
         var data = {
             'M': 5,
             'N': 5,
@@ -23,17 +66,27 @@
             dataType: 'jsonp',
             data: data,
             success: function(response) {
-                alert("yay, success!");
-                console.log("response: " + response)
+                drawGeneration(response);
+                // alert("yay, success!");
+                // console.dir(response)
             },
             error: function( xhr, status, errorThrown ) {
-                alert( "Sorry, there was a problem!" );
-                console.log( "Error: " + errorThrown );
-                console.log( "Status: " + status );
-                console.dir( xhr );
+                alert("Sorry, there was a problem!");
+                console.log("Error: " + errorThrown);
+                console.log("Status: " + status);
+                console.dir(xhr);
             }
         });
-    }     
+    }
+
+    function drawGeneration(response) {
+        $("td").removeClass("live");
+        for (i = 0; i < response.length; i++) {
+            row = response[i][0];
+            col = response[i][1];
+            $("tbody").children()[row].children[col].className = "live";
+        }
+    }
     </script>
 </body>
 </html>
