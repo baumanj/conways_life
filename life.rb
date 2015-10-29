@@ -15,13 +15,13 @@ require "sinatra"
 # * http://snippets.aktagon.com/snippets/445-how-to-create-a-jsonp-cross-domain-webservice-with-sinatra-and-ruby
 # * http://www.sitepoint.com/get-started-with-sinatra-on-heroku/
 
-Cell = Struct.new(:row, :col) do
+Cell = Struct.new(:x, :y) do
   def to_s
-    "[#{row},#{col}]"
+    "[#{x},#{y}]"
   end
 
   def <=> other
-    row == other.row ? col <=> other.col : row <=> other.row
+    x == other.x ? y <=> other.y : x <=> other.x
   end
 end
 
@@ -49,8 +49,8 @@ end
 
 def neighbors(cell)
   offsets = [-1, 0, +1]
-  offsets.product(offsets).reject {|x| x == [0,0] }.map do |ro, co|
-    Cell.new(cell.row + ro, cell.col + co)
+  offsets.product(offsets).reject {|x| x == [0,0] }.map do |xo, yo|
+    Cell.new(cell.x + xo, cell.y + yo)
   end
 end
 

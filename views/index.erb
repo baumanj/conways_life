@@ -65,12 +65,12 @@
 
     function getNextGeneration() {
         var liveCells = []
-        for (r = 0; r < $( "tbody" ).children().length; r++) {
-            var row = $( "tbody" ).children()[r];
+        for (var y = 0; y < $( "tbody" ).children().length; y++) {
+            var row = $( "tbody" ).children()[y];
 
-            for (c = 0; c < row.children.length; c++) {
-                if (row.children[c].className == "live") {
-                    liveCells.push([r, c]);
+            for (var x = 0; x < row.children.length; x++) {
+                if (row.children[x].className == "live") {
+                    liveCells.push([x, y]);
                 }
             }
         }
@@ -111,23 +111,22 @@
         clearGrid();
 
         for (i = 0; i < response.length; i++) {
-            var row = response[i][0];
-            var col = response[i][1];
+            var x = response[i][0];
+            var y = response[i][1];
 
-            if (row < 0 || col < 0) {
-                console.log("negative index: " + row + ", " + col);
+            if (x < 0 || y < 0) {
                 continue;
             }
 
-            while (row >= $("tbody").children().length) {
+            while (y >= $("tbody").children().length) {
                 addRow();
             }
 
-            while (col >= $("tbody").children()[0].children.length) {
+            while (x >= $("tbody").children()[0].children.length) {
                 addCol();
             }
 
-            $("tbody").children()[row].children[col].className = "live";
+            $("tbody").children()[y].children[x].className = "live";
         }
     }
     </script>
