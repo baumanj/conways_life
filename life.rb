@@ -19,6 +19,10 @@ Cell = Struct.new(:row, :col) do
   def to_s
     "[#{row},#{col}]"
   end
+
+  def <=> other
+    row == other.row ? col <=> other.col : row <=> other.row
+  end
 end
 
 LOW_THRESHOLD = 2
@@ -93,7 +97,7 @@ def print_board(on_cells)
     return
   end
 
-  sorted_on_cells = on_cells.map {|c| Cell.new(*c) }.sort_by(&:col).sort_by(&:row)
+  sorted_on_cells = on_cells.map {|c| Cell.new(*c) }.sort
   row_range = (sorted_on_cells.first.row)..(sorted_on_cells.last.row)
   col_range = (sorted_on_cells.first.col)..(sorted_on_cells.last.col)
   puts "Printing [#{row_range.begin}, #{col_range.begin}]..[#{row_range.end}, #{col_range.end}]"
@@ -105,17 +109,13 @@ def print_board(on_cells)
   end
 end
 
-get '/hi' do
-  "Hello World!"
-end
-
 get '/succ' do
   puts "params: #{params.inspect}"
   live_cells = params['liveCells'].values.map do |int_strings|
     Cell.new(*int_strings.map {|s| Integer(s) })
   end
-  next_generation = succ(live_cells)
+  next_generation = succ(live_cells).sort
   next_generation_string = next_generation.map(&:to_s).join(",")
   content_type :js
-  "#{params['callback']}(#{next_generation_string})"
+  "#{params['callback']}([#{next_generation_string}])"
 end
