@@ -81,12 +81,16 @@
         };
 
         $.ajax({
-            url: 'http://localhost:4567/succ',
-            jsonp: 'callback',
-            dataType: 'jsonp',
+            url: 'succ',
+            <% if defined?(jsonp) %>
+                jsonp: 'callback',
+                dataType: 'jsonp',
+            <% else %>
+                method: 'POST',
+            <% end %>
             data: data,
-            method: 'POST',
             success: function(response) {
+                console.dir(response);
                 drawGeneration(response);
             },
             error: function( xhr, status, errorThrown ) {

@@ -14,6 +14,7 @@ require "sinatra"
 # * http://www.w3schools.com
 # * http://www.sinatrarb.com
 # * http://snippets.aktagon.com/snippets/445-how-to-create-a-jsonp-cross-domain-webservice-with-sinatra-and-ruby
+# * http://www.sitepoint.com/get-started-with-sinatra-on-heroku/
 
 Cell = Struct.new(:row, :col) do
   def to_s
@@ -109,13 +110,29 @@ def print_board(on_cells)
   end
 end
 
-get '/succ' do
-  puts "params: #{params.inspect}"
+handle_succ = proc do
+  # puts "params: #{params.inspect}"
   live_cells = params.fetch('liveCells', {}).values.map do |int_strings|
     Cell.new(*int_strings.map {|s| Integer(s) })
   end
   next_generation = succ(live_cells).sort
-  next_generation_string = next_generation.map(&:to_s).join(",")
-  content_type :js
-  "#{params['callback']}([#{next_generation_string}])"
+  json = "[#{next_generation.map(&:to_s).join(',')}]"
+  if params.key?('callback')
+    content_type :js
+    "#{params['callback']}(#{json})"
+  else
+    content_type :json
+    json
+  end
+end
+
+get('/succ', &handle_succ)
+post('/succ', &handle_succ)
+
+get '/' do
+  erb :index
+end
+
+get '/jsonp' do
+  erb :index, locals: {jsonp: true}
 end
