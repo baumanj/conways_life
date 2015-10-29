@@ -9,39 +9,30 @@
     <button type="button" onclick="getNextGeneration()">Click Me!</button>
     <script src="jquery-2.1.4.min.js"></script>
     <script> 
-    $( document ).ready(function() {
-     
-        $( "a" ).click(function( event ) {
-     
-            alert( "Thanks for visiting!" );
-     
-        });
-     
-    });
-
     function getNextGeneration() {
-      var liveCells = [[2,1],[2,2],[2,3]];
-      var data = {
-          'M': 5,
-          'N': 5,
-          'liveCells' : liveCells
-      };
+        var liveCells = [[2,1],[2,2],[2,3]];
+        var data = {
+            'M': 5,
+            'N': 5,
+            'liveCells' : liveCells
+        };
 
-      $.ajax({
-          url: 'http://localhost:4567/succ',
-          jsonp: 'callback',
-          dataType: 'jsonp',
-          data: data,
-          success: function(response) {
-              alert("yay, success!");
-          },
-          error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
-          }
-      });
+        $.ajax({
+            url: 'http://localhost:4567/succ',
+            jsonp: 'callback',
+            dataType: 'jsonp',
+            data: data,
+            success: function(response) {
+                alert("yay, success!");
+                console.log("response: " + response)
+            },
+            error: function( xhr, status, errorThrown ) {
+                alert( "Sorry, there was a problem!" );
+                console.log( "Error: " + errorThrown );
+                console.log( "Status: " + status );
+                console.dir( xhr );
+            }
+        });
     }     
     </script>
 </body>
