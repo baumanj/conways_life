@@ -27,7 +27,6 @@ end
 
 LOW_THRESHOLD = 2
 HIGH_THRESHOLD = 3
-MAX_GRID_SIZE = 1_000_000
 
 def succ(on_cells)
   cells_to_consider =

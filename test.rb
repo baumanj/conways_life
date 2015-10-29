@@ -6,6 +6,8 @@ if __FILE__ == $0
   puts `rspec -f documentation #{__FILE__}`
 end
 
+MAX_GRID_SIZE = 1_000_000
+
 describe :succ do
   1000.times do
     test_cell = Cell.new(rand(MAX_GRID_SIZE), rand(MAX_GRID_SIZE))
