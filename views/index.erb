@@ -19,6 +19,7 @@
     <button type="button" onclick="addRow()">Add row</button>
     <button type="button" onclick="addCol()">Add column</button>
     <button type="button" onclick="drawGeneration([[11,12], [12,14], [13,11], [13,12], [13,15], [13,16], [13,17]])">Add acorn</button>
+    <button type="button" onclick="clearGrid()">Clear</button>
 
     <table>
         <tr>
@@ -102,8 +103,13 @@
         });
     }
 
-    function drawGeneration(response) {
+    function clearGrid() {
         $("td").removeClass("live");
+    }
+
+    function drawGeneration(response) {
+        clearGrid();
+
         for (i = 0; i < response.length; i++) {
             var row = response[i][0];
             var col = response[i][1];
