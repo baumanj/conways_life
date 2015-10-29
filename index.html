@@ -18,6 +18,8 @@
     <button type="button" onclick="getNextGeneration()">Next generation!</button>
     <button type="button" onclick="addRow()">Add row</button>
     <button type="button" onclick="addCol()">Add column</button>
+    <button type="button" onclick="drawGeneration([[11,12], [12,14], [13,11], [13,12], [13,15], [13,16], [13,17]])">Add acorn</button>
+
     <table>
         <tr>
             <td></td><td></td><td></td><td></td><td></td>
@@ -71,9 +73,7 @@
                 }
             }
         }
-        console.dir(liveCells);
 
-        // var liveCells = [[2,1],[2,2],[2,3]];
         var data = {
             'M': 5,
             'N': 5,
@@ -85,10 +85,9 @@
             jsonp: 'callback',
             dataType: 'jsonp',
             data: data,
+            method: 'POST',
             success: function(response) {
                 drawGeneration(response);
-                // alert("yay, success!");
-                // console.dir(response)
             },
             error: function( xhr, status, errorThrown ) {
                 alert("Sorry, there was a problem!");
