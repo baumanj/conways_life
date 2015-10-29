@@ -6,8 +6,8 @@
     <style type="text/css">
         td {
             border: 1px solid black;
-            width: 25px;
-            height: 25px;
+            width: 50px;
+            height: 50px;
         }
         td.live {
             background-color: green;
@@ -15,6 +15,9 @@
     </style>
 </head>
 <body>
+    <button type="button" onclick="getNextGeneration()">Next generation!</button>
+    <button type="button" onclick="addRow()">Add row</button>
+    <button type="button" onclick="addCol()">Add column</button>
     <table>
         <tr>
             <td></td><td></td><td></td><td></td><td></td>
@@ -32,14 +35,31 @@
             <td></td><td></td><td></td><td></td><td></td>
         </tr>
     </table>
-    <button type="button" onclick="getNextGeneration()">Next generation!</button>
     <script src="jquery-2.1.4.min.js"></script>
     <script>
-    $( document ).ready(function() {
-        $( "td" ).click(function( event ) {
-            $( this ).toggleClass( "live" );
-        });
+    $(document).on('click', 'td' , function() {
+        $( this ).toggleClass( "live" );
     });
+
+    function adjuctCellSize() {
+        $("td").css("height", (50.0 * 5 / $("tr").length) + "px");
+        $("td").css("width", (50.0 * 5 / $("tr")[0].children.length) + "px");
+    }
+
+    function addRow() {
+        var cells = "";
+        for (c = 0; c < $("tbody").children()[0].children.length; c++) {
+            cells += "<td></td>";
+        }
+        $("tbody").append("<tr>" + cells + "</tr>");
+        adjuctCellSize();
+    }
+
+    function addCol() {
+        $("tr").append("<td></td>");
+        adjuctCellSize();
+    }
+
     function getNextGeneration() {
         var liveCells = []
         for (r = 0; r < $( "tbody" ).children().length; r++) {
@@ -82,8 +102,22 @@
     function drawGeneration(response) {
         $("td").removeClass("live");
         for (i = 0; i < response.length; i++) {
-            row = response[i][0];
-            col = response[i][1];
+            var row = response[i][0];
+            var col = response[i][1];
+
+            if (row < 0 || col < 0) {
+                console.log("negative index: " + row + ", " + col);
+                continue;
+            }
+
+            while (row >= $("tbody").children().length) {
+                addRow();
+            }
+
+            while (col >= $("tbody").children()[0].children.length) {
+                addCol();
+            }
+
             $("tbody").children()[row].children[col].className = "live";
         }
     }
