@@ -111,7 +111,7 @@ end
 
 get '/succ' do
   puts "params: #{params.inspect}"
-  live_cells = params['liveCells'].values.map do |int_strings|
+  live_cells = params.fetch('liveCells', {}).values.map do |int_strings|
     Cell.new(*int_strings.map {|s| Integer(s) })
   end
   next_generation = succ(live_cells).sort
