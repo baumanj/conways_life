@@ -1,5 +1,6 @@
 require "rspec"
 require "set"
+require "sinatra"
 
 # Count the number of 'on' cells surrounding each cell on the board. If the
 # number of 'on' cells is less than two, that cell is 'off' for the next
@@ -7,7 +8,19 @@ require "set"
 # the number of 'on' cells is three, the cell becomes 'on'. If the number of
 # cells is greater than three, the cell becomes 'off'.
 
-Cell = Struct.new(:row, :col)
+# Resources used:
+# * http://json-p.org
+# * http://api.jquery.com/jquery.ajax/
+# * http://www.w3schools.com
+# * http://www.sinatrarb.com
+# * http://snippets.aktagon.com/snippets/445-how-to-create-a-jsonp-cross-domain-webservice-with-sinatra-and-ruby
+
+Cell = Struct.new(:row, :col) do
+  def to_s
+    "[#{row},#{col}]"
+  end
+end
+
 LOW_THRESHOLD = 2
 HIGH_THRESHOLD = 3
 MAX_GRID_SIZE = 1_000_000
@@ -90,4 +103,19 @@ def print_board(on_cells)
     end
     puts "…"
   end
+end
+
+get '/hi' do
+  "Hello World!"
+end
+
+get '/succ' do
+  puts "params: #{params.inspect}"
+  live_cells = params['liveCells'].values.map do |int_strings|
+    Cell.new(*int_strings.map {|s| Integer(s) })
+  end
+  next_generation = succ(live_cells)
+  next_generation_string = next_generation.map(&:to_s).join(",")
+  content_type :js
+  "#{params['callback']}(#{next_generation_string})"
 end
